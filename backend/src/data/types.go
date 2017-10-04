@@ -31,6 +31,7 @@ type Transfer struct {
 // A crypto-currency account on one of the known exchanges.
 type Account struct {
 	ID         int         `json:"id"`
+	Name       string      `json:"name"`
 	Currency   Currency    `json:"currency"`
 	CurrencyID int         `json:"currencyId"`
 	Exchange   Exchange    `json:"exchange"`

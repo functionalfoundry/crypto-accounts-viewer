@@ -11,7 +11,7 @@ var Schema graphql.Schema
 
 func init() {
 	// Currencies
-	currencyType := graphql.NewObject(graphql.ObjectConfig{
+	currency := graphql.NewObject(graphql.ObjectConfig{
 		Name:        "Currency",
 		Description: "A currency",
 		Fields: graphql.Fields{
@@ -20,10 +20,10 @@ func init() {
 			"longName": &graphql.Field{Type: graphql.String},
 		},
 	})
-	currencyListType := graphql.NewList(currencyType)
+	currencyList := graphql.NewList(currency)
 
 	// Exchanges
-	exchangeType := graphql.NewObject(graphql.ObjectConfig{
+	exchange := graphql.NewObject(graphql.ObjectConfig{
 		Name:        "Exchange",
 		Description: "A crypto-currency exchange",
 		Fields: graphql.Fields{
@@ -31,40 +31,40 @@ func init() {
 			"name": &graphql.Field{Type: graphql.String},
 		},
 	})
-	exchangeListType := graphql.NewList(exchangeType)
+	exchangeList := graphql.NewList(exchange)
 
 	// Accounts
-	accountType := graphql.NewObject(graphql.ObjectConfig{
+	account := graphql.NewObject(graphql.ObjectConfig{
 		Name:        "Account",
 		Description: "A crypto-currency account on an exchange",
 		Fields: graphql.Fields{
 			"id":       &graphql.Field{Type: graphql.Int},
-			"currency": &graphql.Field{Type: currencyType},
-			"exchange": &graphql.Field{Type: exchangeType},
+			"currency": &graphql.Field{Type: currency},
+			"exchange": &graphql.Field{Type: exchange},
 		},
 	})
-	accountListType := graphql.NewList(accountType)
+	accountList := graphql.NewList(account)
 
 	// Queries
-	queryType := graphql.NewObject(graphql.ObjectConfig{
+	query := graphql.NewObject(graphql.ObjectConfig{
 		Name: "Query",
 		Fields: graphql.Fields{
 			"accounts": &graphql.Field{
-				Type: accountListType,
+				Type: accountList,
 				Resolve: func(params graphql.ResolveParams) (interface{}, error) {
 					db := database.GetDatabaseFromContext(params.Context)
 					return database.GetAccounts(db)
 				},
 			},
 			"currencies": &graphql.Field{
-				Type: currencyListType,
+				Type: currencyList,
 				Resolve: func(params graphql.ResolveParams) (interface{}, error) {
 					db := database.GetDatabaseFromContext(params.Context)
 					return database.GetCurrencies(db)
 				},
 			},
 			"exchanges": &graphql.Field{
-				Type: exchangeListType,
+				Type: exchangeList,
 				Resolve: func(params graphql.ResolveParams) (interface{}, error) {
 					db := database.GetDatabaseFromContext(params.Context)
 					return database.GetExchanges(db)
@@ -73,29 +73,33 @@ func init() {
 		},
 	})
 
+	// Account creation
+	createAccount := graphql.Field{
+		Type: account,
+		Args: graphql.FieldConfigArgument{
+			"name":       &graphql.ArgumentConfig{Type: graphql.String},
+			"currencyId": &graphql.ArgumentConfig{Type: graphql.Int},
+			"exchangeId": &graphql.ArgumentConfig{Type: graphql.Int},
+		},
+		Resolve: func(params graphql.ResolveParams) (interface{}, error) {
+			db := database.GetDatabaseFromContext(params.Context)
+			return database.CreateAccount(db, params.Args)
+		},
+	}
+
 	// Mutations
-	mutationType := graphql.NewObject(graphql.ObjectConfig{
+	mutation := graphql.NewObject(graphql.ObjectConfig{
 		Name: "Mutation",
 		Fields: graphql.Fields{
-			"createAccount": &graphql.Field{
-				Type: accountType,
-				Args: graphql.FieldConfigArgument{
-					"currencyId": &graphql.ArgumentConfig{Type: graphql.Int},
-					"exchangeId": &graphql.ArgumentConfig{Type: graphql.Int},
-				},
-				Resolve: func(params graphql.ResolveParams) (interface{}, error) {
-					db := database.GetDatabaseFromContext(params.Context)
-					return database.CreateAccount(db, params.Args)
-				},
-			},
+			"createAccount": &createAccount,
 		},
 	})
 
 	// Create the schema from our query and mutation types
 	var err error
 	Schema, err = graphql.NewSchema(graphql.SchemaConfig{
-		Query:    queryType,
-		Mutation: mutationType,
+		Query:    query,
+		Mutation: mutation,
 	})
 
 	// Panic if there is a problem with the schema
