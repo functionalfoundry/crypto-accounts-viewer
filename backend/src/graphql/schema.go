@@ -15,8 +15,9 @@ func init() {
 		Name:        "Currency",
 		Description: "A currency",
 		Fields: graphql.Fields{
-			"id":   &graphql.Field{Type: graphql.Int},
-			"name": &graphql.Field{Type: graphql.String},
+			"id":       &graphql.Field{Type: graphql.Int},
+			"name":     &graphql.Field{Type: graphql.String},
+			"longName": &graphql.Field{Type: graphql.String},
 		},
 	})
 	currencyListType := graphql.NewList(currencyType)
