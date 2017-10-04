@@ -1,0 +1,17 @@
+#!/bin/bash
+
+set -e
+
+# Read parameters
+
+OUTPUT_FILE="$1"
+
+# Install dependencies
+
+go get -v github.com/go-pg/pg
+go get -v github.com/graphql-go/graphql
+go get -v github.com/graphql-go/handler
+
+# Build the backend
+
+cd "backend/src" && go build -o "../../$OUTPUT_FILE" -v

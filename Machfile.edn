@@ -1,0 +1,21 @@
+{target-dir {product "build"
+             novelty (not (mach.core/file-exists? product))
+             update! #$ ["mkdir" product]
+             clean!  #$ ["rmdir" product]}
+
+ build-backend {product "build/backend"
+                depends [target-dir]
+                description "The backend"
+                update! #$ ["scripts/build-backend" product]}
+
+ start-backend {depends [build-backend]
+                description "Starts the backend"
+                update! #$ ["build/backend"]}}
+
+
+
+
+
+
+
+
