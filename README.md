@@ -1,4 +1,4 @@
-# Crypto Account Manager
+# Crypto Accounts Viewer
 
 **Note: At this point, this project is merely an experiment.**
 
