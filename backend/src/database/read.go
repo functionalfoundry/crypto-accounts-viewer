@@ -14,10 +14,18 @@ func GetAccounts(db *pg.DB) ([]*data.Account, error) {
 	return accounts, err
 }
 
-func GetCurrencies(db *pg.DB) ([]data.Currency, error) {
-	return []data.Currency{}, nil
+func GetCurrencies(db *pg.DB) ([]*data.Currency, error) {
+	var currencies []*data.Currency
+	err := db.Model(&currencies).
+		Column("currency.*").
+		Select()
+	return currencies, err
 }
 
-func GetExchanges(db *pg.DB) ([]data.Exchange, error) {
-	return []data.Exchange{}, nil
+func GetExchanges(db *pg.DB) ([]*data.Exchange, error) {
+	var exchanges []*data.Exchange
+	err := db.Model(&exchanges).
+		Column("exchange.*").
+		Select()
+	return exchanges, err
 }
