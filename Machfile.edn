@@ -3,6 +3,8 @@
              update! #$ ["mkdir" product]
              clean!  #$ ["rmdir" product]}
 
+ ;; Backend targets
+
  build-backend {product "build/backend"
                 depends [target-dir]
                 description "The backend"
@@ -10,7 +12,14 @@
 
  start-backend {depends [build-backend]
                 description "Starts the backend"
-                update! #$ ["build/backend"]}}
+                update! #$ ["build/backend"]}
+
+ ;; Frontend targets
+
+ start-frontend {product "build/frontend"
+                 depends [target-dir]
+                 description "Starts the frontend"
+                 update! #$ ["scripts/start-frontend" product]}}
 
 
 

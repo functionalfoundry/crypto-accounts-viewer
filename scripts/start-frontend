@@ -1,0 +1,11 @@
+#!/bin/bash
+
+set -e
+
+# Read parameters
+
+OUTPUT_DIR="$1"
+
+# Build and run the frontend
+
+cd "frontend" && boot --target-path="../../$OUTPUT_DIR" dev
