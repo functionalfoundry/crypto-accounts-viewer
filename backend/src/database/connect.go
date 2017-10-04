@@ -1,6 +1,7 @@
 package database
 
 import (
+	"fmt"
 	"github.com/go-pg/pg"
 	"github.com/go-pg/pg/orm"
 
@@ -37,11 +38,11 @@ func Connect(options *pg.Options) *pg.DB {
 	// Populate the database with seed data
 	err = db.Insert(&data.Currencies)
 	if err != nil {
-		panic(err)
+		fmt.Printf(err.Error())
 	}
 	err = db.Insert(&data.Exchanges)
 	if err != nil {
-		panic(err)
+		fmt.Printf(err.Error())
 	}
 
 	return db
